@@ -26,8 +26,6 @@
 }
 
 [role="tablist"]::after {
-  order: 1;
-  // flex: 1;
   grid-column-end: -1;
 }
 
@@ -49,7 +47,7 @@ label[role="tab"],
 }
 
 [role="tab"]:hover {
-  --border-color: var(--secondary-color);
+  --border-color: var(--color-secondary);
   border: var(--border);
 }
 
@@ -70,32 +68,29 @@ label[role="tab"],
   overflow: hidden;
 }
 
+[role="tab"]:where(:has(:checked), [aria-selected="true"]) {
+  border-top: var(--border);
+  border-left: var(--border);
+  border-right: var(--border);
+  border-bottom: var(--border-empty);
+}
+
 [role="tab"][aria-selected="true"] {
   border-top: var(--border);
   border-left: var(--border);
   border-right: var(--border);
   border-bottom: var(--border-empty);
 }
-
-[role="tab"]:has(:checked) {
-  border-top: var(--border);
-  border-left: var(--border);
-  border-right: var(--border);
-  border-bottom: var(--border-empty);
-}
-
 [role="tabpanel"] {
   display: none;
   // order: 2;
   grid-area: 2 / 1 / span 1 / -1;
 }
 
-[role="tab"][aria-selected="true"] + [role="tabpanel"] {
+[role="tab"]:where(:has(:checked), [aria-selected="true"])+[role="tabpanel"] {
   display: block;
-  flex-basis: 100%;
 }
 
-[role="tab"]:has(:checked) + [role="tabpanel"] {
-  display: block;
-  flex-basis: 100%;
-}
+// [role="tab"]:has(:checked) + [role="tabpanel"] {
+//   display: block;
+// }
