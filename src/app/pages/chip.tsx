@@ -1,11 +1,4 @@
-import {
-  CSSProperties,
-  ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Trans } from "@lingui/macro";
 
 import "./chip.scss";
@@ -23,6 +16,7 @@ import { Timer } from "../../simulator/timer";
 import { useStateInitializer } from "../util/react";
 import { Clockface } from "../components/clockface";
 import { PROJECTS } from "../../projects";
+import { Tab, Tabs } from "../components/tab";
 
 export const Chip = () => {
   const { state, actions, dispatch } = useChipPageStore();
@@ -229,10 +223,6 @@ export const Chip = () => {
     </Panel>
   );
 
-  const [selectedTestTab, setSelectedTestTab] = useState<"tst" | "cmp" | "out">(
-    "tst"
-  );
-
   const testPanel = (
     <Panel
       className="_test_panel"
@@ -241,36 +231,19 @@ export const Chip = () => {
           <div className="flex-1">
             <Trans>Test</Trans>
           </div>
-          <div className="flex-2">
-            {runner.current && <Runbar runner={runner.current} />}
-          </div>
+          {runner.current && (
+            <div className="flex-2">
+              <Runbar runner={runner.current} />
+            </div>
+          )}
         </>
       }
     >
-      <div role="tablist" style={{ "--tab-count": "3" } as CSSProperties}>
-        <div
-          role="tab"
-          id="test-tab-tst"
-          aria-controls="test-tabpanel-tst"
-          aria-selected={selectedTestTab === "tst"}
-        >
-          <label>
-            <input
-              type="radio"
-              name="test-tabs"
-              aria-controls="test-tabpanel-tst"
-              value="tst"
-              checked={selectedTestTab === "tst"}
-              onChange={() => setSelectedTestTab("tst")}
-            />
-            Test Script
-          </label>
-        </div>
-        <div
-          role="tabpanel"
-          aria-labelledby="test-tab-tst"
-          id="test-tabpanel-tst"
-        >
+      <Tabs tablist="test-tabs" tab="out">
+        <Tab tabid="out" label={<>Output File</>}>
+          <DiffTable cmp={cmp} out={out} />
+        </Tab>
+        <Tab tabid="tst" label={<>Test Script</>}>
           <Editor
             value={tst}
             onChange={setTst}
@@ -278,64 +251,16 @@ export const Chip = () => {
             language={"tst"}
             highlight={state.controls.span}
           />
-        </div>
-        <div
-          role="tab"
-          id="test-tab-cmp"
-          aria-controls="test-tablpanel-cmp"
-          aria-selected={selectedTestTab === "cmp"}
-        >
-          <label>
-            <input
-              type="radio"
-              name="test-tabs"
-              aria-controls="test-tabpanel-cmp"
-              value="cmp"
-              checked={selectedTestTab === "cmp"}
-              onChange={() => setSelectedTestTab("cmp")}
-            />
-            Compare File
-          </label>
-        </div>
-        <div
-          role="tabpanel"
-          aria-labelledby="test-tab-cmp"
-          id="test-tabpanel-cmp"
-          style={{ position: "relative" }}
-        >
+        </Tab>
+        <Tab tabid="cmp" label="Compare File">
           <Editor
             value={cmp}
             onChange={setCmp}
             grammar={CMP.parser}
             language={"cmp"}
           />
-        </div>
-        <div
-          role="tab"
-          id="test-tab-out"
-          aria-controls="test-tabpanel-out"
-          aria-selected={selectedTestTab === "out"}
-        >
-          <label>
-            <input
-              type="radio"
-              name="test-tabs"
-              aria-controls="test-tabpanel-out"
-              value="out"
-              checked={selectedTestTab === "out"}
-              onChange={() => setSelectedTestTab("out")}
-            />
-            Output File
-          </label>
-        </div>
-        <div
-          role="tabpanel"
-          id="test-tabpanel-out"
-          aria-labelledby="test-tab-out"
-        >
-          <DiffTable cmp={cmp} out={out} />
-        </div>
-      </div>
+        </Tab>
+      </Tabs>
     </Panel>
   );
 
