@@ -1,6 +1,7 @@
 import { CSSProperties, ReactNode } from "react";
 
 export const Panel = (props: {
+  mainClassName?: string;
   children: ReactNode;
   header?: ReactNode;
   footer?: ReactNode;
@@ -10,7 +11,7 @@ export const Panel = (props: {
   return (
     <article className={["panel", props.className ?? ""].join(" ")}>
       {props.header && <header>{props.header}</header>}
-      <main>{props.children}</main>
+      <main className={props.mainClassName}>{props.children}</main>
       {props.footer && <footer>{props.footer}</footer>}
     </article>
   );

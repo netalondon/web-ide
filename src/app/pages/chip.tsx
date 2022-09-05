@@ -132,6 +132,7 @@ export const Chip = () => {
   const hdlPanel = (
     <Panel
       className="_hdl_panel"
+      mainClassName="flex flex-1"
       header={
         <>
           <div tabIndex={0}>HDL</div>
@@ -235,7 +236,7 @@ export const Chip = () => {
 
   const testPanel = (
     <Panel
-      className="_test_panel"
+      className="_test_panel flex flex-1"
       header={
         <>
           <div className="flex-1">
@@ -267,6 +268,7 @@ export const Chip = () => {
           </label>
         </div>
         <div
+          className="flex flex-1"
           role="tabpanel"
           aria-labelledby="test-tab-tst"
           id="test-tabpanel-tst"

@@ -232,7 +232,12 @@ export const Editor = ({
   );
 
   return (
-    <div className={`Editor ${className}`} style={style}>
+    <div
+      className={`Editor ${className} ${
+        (monaco.canUse && monaco.wants) || "flex flex-1"
+      }`}
+      style={style}
+    >
       {monaco.canUse && monaco.wants ? (
         <Monaco
           value={value}
