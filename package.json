@@ -48,6 +48,7 @@
     "projects",
     "runner",
     "simulator",
-    "web"
+    "web",
+    "integration"
   ]
 }
