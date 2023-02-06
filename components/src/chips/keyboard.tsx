@@ -1,4 +1,4 @@
-import { Keyboard as KeyboardChip } from "@nand2tetris/simulator/chip/builtins/computer/computer.js";
+import { KeyboardAdapter } from "@nand2tetris/simulator/cpu/memory.js";
 import { KeyboardEvent, useCallback, useState } from "react";
 import { RegisterComponent } from "./register.js";
 
@@ -46,9 +46,9 @@ function keyPressToHackCharacter(keypress: KeyboardEvent): number {
   return 0;
 }
 
-export const Keyboard = ({ keyboard }: { keyboard: KeyboardChip }) => {
+export const Keyboard = ({ keyboard }: { keyboard: KeyboardAdapter }) => {
   const [showPicker, setShowPicker] = useState(false);
-  const [bits, setBits] = useState(keyboard.out().busVoltage);
+  const [bits, setBits] = useState(keyboard.getKey());
 
   const setKey = useCallback(
     (event: KeyboardEvent<HTMLInputElement>) => {
@@ -58,7 +58,7 @@ export const Keyboard = ({ keyboard }: { keyboard: KeyboardChip }) => {
       }
       event.preventDefault();
       keyboard.setKey(key);
-      setBits(keyboard.out().busVoltage);
+      setBits(keyboard.getKey());
       setShowPicker(false);
     },
     [keyboard, setShowPicker, setBits]
