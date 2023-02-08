@@ -95,9 +95,7 @@ export const MemoryCell = ({
     <code
       style={{
         ...rounded("none"),
-        ...(highlight
-          ? { background: "var(--code-kbd-background-color)" }
-          : {}),
+        ...(highlight ? { background: "var(--mark-background-color)" } : {}),
       }}
     >
       {hex(index)}
@@ -107,9 +105,7 @@ export const MemoryCell = ({
         flex: "1",
         textAlign: "right",
         ...rounded("none"),
-        ...(highlight
-          ? { background: "var(--code-kbd-background-color)" }
-          : {}),
+        ...(highlight ? { background: "var(--mark-background-color)" } : {}),
       }}
     >
       {editable ? (
@@ -168,7 +164,7 @@ export const Memory = ({
     const bytes = await loader(source);
     memory.loadBytes(bytes);
     event.target.value = ""; // Clear the input out
-    setGoto(goto);
+    jumpTo();
   }, []);
 
   const doUpdate = useCallback(
@@ -203,23 +199,11 @@ export const Memory = ({
             {/* <Icon name="move_down" /> */}
             ⤵️
           </button>
-          {FORMATS.map((option) => (
-            <label
-              className="flex-0"
-              key={option}
-              role="button"
-              aria-current={option === fmt}
-            >
-              <input
-                type="radio"
-                name={name}
-                value={option}
-                checked={option === fmt}
-                onChange={() => setFormat(option)}
-              />
-              {option}
-            </label>
-          ))}
+          <select value={fmt} onChange={(e) => setFormat(e.target.value)}>
+            {FORMATS.map((option) => (
+              <option key={option}>{option}</option>
+            ))}
+          </select>
         </fieldset>
       </header>
       <MemoryBlock
