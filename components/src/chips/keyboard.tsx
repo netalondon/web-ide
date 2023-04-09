@@ -49,38 +49,45 @@ function keyPressToHackCharacter(keypress: KeyboardEvent): number {
 export const Keyboard = ({ keyboard }: { keyboard: KeyboardAdapter }) => {
   const [showPicker, setShowPicker] = useState(false);
   const [bits, setBits] = useState(keyboard.getKey());
+  const setKey = (key: number) => {
+    keyboard.setKey(key);
+    setBits(keyboard.getKey());
+    setShowPicker(false);
+  };
 
-  const setKey = useCallback(
-    (event: KeyboardEvent<HTMLInputElement>) => {
-      const key = keyPressToHackCharacter(event);
-      if (key === 0) {
-        return;
-      }
-      event.preventDefault();
-      keyboard.setKey(key);
-      setBits(keyboard.getKey());
-      setShowPicker(false);
-    },
-    [keyboard, setShowPicker, setBits]
-  );
+  const doSetKey = (event: KeyboardEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    const key = keyPressToHackCharacter(event);
+    if (key === 0) {
+      return;
+    }
+    setKey(key);
+  };
 
-  const changeKey = useCallback(() => {
+  const clear = () => {
+    setKey(0);
+  };
+
+  const changeKey = () => {
     setShowPicker(true);
-  }, []);
+  };
 
   return (
     <div className="flex row align-baseline">
       <div className="flex-1">
         <RegisterComponent name="Keyboard" bits={bits} />
       </div>
-      <div className="flex-1">
+      <div className={showPicker ? "flex-1" : "flex-0"}>
         {showPicker ? (
-          <input ref={(e) => e?.focus()} type="text" onKeyDown={setKey} />
+          <input ref={(e) => e?.focus()} type="text" onKeyDown={doSetKey} />
         ) : (
-          <button onClick={changeKey}>
-            {/* <Icon name="keyboard" /> */}
-            ⌨️
-          </button>
+          <fieldset role="group">
+            <button onClick={changeKey}>
+              {/* <Icon name="keyboard" /> */}
+              ⌨️
+            </button>
+            <button onClick={clear}>🆑</button>
+          </fieldset>
         )}
       </div>
     </div>
