@@ -1,0 +1,1 @@
+{"version":3,"file":"static/js/328.2f89c89d.chunk.js","mappings":"2KAAO,MAAMA,EAAQ,KACZ,0BAAM,sBAGf,G","sources":["pages/about.tsx"],"sourcesContent":["export const About = () => {\n  return <span>To be added later</span>;\n};\n\nexport default About;"],"names":["About"],"sourceRoot":""}
