@@ -1,4 +1,5 @@
 import { FileSystem, reset } from "@davidsouther/jiffies/lib/esm/fs.js";
+import { cleanup } from "../../reset.js";
 import { AddAsm, AddHack } from "./01_add.js";
 import { MaxAsm, MaxHack } from "./02_max.js";
 import { RectAsm, RectHack } from "./03_rect.js";
@@ -26,4 +27,10 @@ export async function resetFiles(fs: FileSystem): Promise<void> {
 
 export async function resetTests(fs: FileSystem): Promise<void> {
   return;
+}
+
+export async function cleanupFiles(fs: FileSystem): Promise<void> {
+  await fs.pushd("/projects/6");
+  await cleanup(fs, FILES);
+  await fs.popd();
 }
