@@ -356,6 +356,7 @@ export function makeAsmStore(
 
     reset() {
       failure = false;
+      translating = false;
       setStatus("Reset");
       translator.reset();
       this.resetHighlightInfo();
