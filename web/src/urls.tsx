@@ -62,12 +62,7 @@ const URLs: Record<string, URL> = {
     href: "/util",
     target: <Util />,
   },
-  chipGuide: {
-    href: "/chip_guide",
-    target: <ChipGuide />,
-  },
   about: { href: "/about", target: <About /> },
-  placeholder: { href: "/placeholder", target: <span>To be added later</span> },
 };
 
 export default URLs;
