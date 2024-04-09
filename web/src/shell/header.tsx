@@ -17,7 +17,6 @@ interface HeaderButton {
 interface HeaderButtonContext {
   appContext: ReturnType<typeof useAppContext>;
   pathname: string;
-  guideRefs: Record<string, RefObject<HTMLAnchorElement>>;
 }
 
 function headerButtonFromURL(url: URL, icon: string, tooltip?: string) {
@@ -35,7 +34,13 @@ function headerButtonFromURL(url: URL, icon: string, tooltip?: string) {
 }
 
 function openGuide(context: HeaderButtonContext) {
-  context.guideRefs[context.pathname]?.current?.click();
+  if (guideLinks[context.pathname]) {
+    window.open(
+      guideLinks[context.pathname],
+      "_blank",
+      "width=1000,height=800"
+    );
+  }
 }
 
 const headerButtons: HeaderButton[] = [
@@ -68,6 +73,7 @@ const headerButtons: HeaderButton[] = [
 
 const guideLinks: Record<string, string> = {
   chip: "https://drive.google.com/file/d/15unXGgTfQySMr1V39xTCLTgGfCOr6iG9/view",
+  cpu: "https://drive.google.com/file/d/16eHIj78Cpeb0uxXBAvxUPUaIwkrj3NIu/view",
 };
 
 const Header = () => {
@@ -81,12 +87,7 @@ const Header = () => {
     }
   }
 
-  const guideRefs: Record<string, RefObject<HTMLAnchorElement>> = {};
-  for (const path of Object.keys(guideLinks)) {
-    guideRefs[path] = useRef<HTMLAnchorElement>(null);
-  }
-
-  const pathname = useLocation().pathname.replace("/", "");
+  const pathname = useLocation().pathname.replaceAll("/", "");
 
   return (
     <header>
@@ -107,16 +108,6 @@ const Header = () => {
             {appContext.title && ` / ${appContext.title}`}
           </li>
         </ul>
-        {Object.entries(guideLinks).map(([path, guideLink]) => (
-          <a
-            key={path}
-            style={{ display: "none" }}
-            href={guideLink}
-            ref={guideRefs[path]}
-            target="_blank"
-            rel="noreferrer"
-          ></a>
-        ))}
         <ul className="icon-list">
           {headerButtons.map(
             ({ href, icon, onClick, tooltip, target, tool }) => {
@@ -129,7 +120,7 @@ const Header = () => {
                     appContext.setTitle(undefined);
                     setStatus("");
                     if (onClick) {
-                      onClick?.({ appContext, pathname, guideRefs });
+                      onClick?.({ appContext, pathname });
                     } else {
                       if (href) {
                         if (target) {
