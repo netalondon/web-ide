@@ -4,11 +4,7 @@ import { base } from "./base";
 export const AsmLanguage: monaco.languages.IMonarchLanguage = {
   tokenizer: {
     root: [
-      [/(JGT|JLT|JGE|JLE|JEQ|JMP|[AMD]{1,3}|R\d+|[\d]+)/, "keyword"],
-      [/(\+|-|!|=|&&|\|\|)/, "operators"],
-      [/[\w_]+/, "identifier"],
-
-      // whitespace
+      [/(@)([A-Za-z]\w+)/, ["operator", "keyword"]],
       { include: "@whitespace" },
     ],
     ...base.tokenizer,
