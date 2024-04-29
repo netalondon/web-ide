@@ -1,4 +1,7 @@
-import { BaseContext } from "@nand2tetris/components/stores/base.context";
+import {
+  BaseContext,
+  useBaseContext,
+} from "@nand2tetris/components/stores/base.context";
 import { RefObject, useContext, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { AppContext, useAppContext } from "src/App.context";
@@ -16,6 +19,7 @@ interface HeaderButton {
 
 interface HeaderButtonContext {
   appContext: ReturnType<typeof useAppContext>;
+  baseContext: ReturnType<typeof useBaseContext>;
   pathname: string;
 }
 
@@ -33,14 +37,26 @@ function headerButtonFromURL(url: URL, icon: string, tooltip?: string) {
   };
 }
 
-function openGuide(context: HeaderButtonContext) {
-  if (guideLinks[context.pathname]) {
-    window.open(
-      guideLinks[context.pathname],
-      "_blank",
-      "width=1000,height=800"
-    );
+const guideLinks: Record<string, string> = {
+  chip: "https://drive.google.com/file/d/15unXGgTfQySMr1V39xTCLTgGfCOr6iG9/view",
+  cpu: "https://drive.google.com/file/d/16eHIj78Cpeb0uxXBAvxUPUaIwkrj3NIu/view",
+  asm: "https://drive.google.com/file/d/16gy2EDqUqrPIzy-vyX0-M8ObN5HyQa3Y/view",
+};
+
+const GUIDE_NOT_AVAILABLE_MESSAGE = "Guide not available for this tool";
+
+async function openGuide(context: HeaderButtonContext) {
+  if (!guideLinks[context.pathname]) {
+    context.baseContext.setStatus(GUIDE_NOT_AVAILABLE_MESSAGE);
+    return;
   }
+  const pdfLink = guideLinks[context.pathname];
+  const response = await fetch(pdfLink);
+  if (response.status === 404) {
+    context.baseContext.setStatus(GUIDE_NOT_AVAILABLE_MESSAGE);
+    return;
+  }
+  window.open(pdfLink, "_blank", "width=1000,height=800");
 }
 
 const headerButtons: HeaderButton[] = [
@@ -71,13 +87,9 @@ const headerButtons: HeaderButton[] = [
   headerButtonFromURL(URLs["about"], "info", "About"),
 ];
 
-const guideLinks: Record<string, string> = {
-  chip: "https://drive.google.com/file/d/15unXGgTfQySMr1V39xTCLTgGfCOr6iG9/view",
-  cpu: "https://drive.google.com/file/d/16eHIj78Cpeb0uxXBAvxUPUaIwkrj3NIu/view",
-};
-
 const Header = () => {
   const appContext = useContext(AppContext);
+  const baseContext = useContext(BaseContext);
   const { setStatus } = useContext(BaseContext);
 
   const redirectRefs: Record<string, RefObject<HTMLAnchorElement>> = {};
@@ -120,7 +132,7 @@ const Header = () => {
                     appContext.setTitle(undefined);
                     setStatus("");
                     if (onClick) {
-                      onClick?.({ appContext, pathname });
+                      onClick?.({ appContext, baseContext, pathname });
                     } else {
                       if (href) {
                         if (target) {
