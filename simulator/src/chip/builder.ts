@@ -308,9 +308,7 @@ class ChipBuilder {
         return result;
       }
     } else {
-      return Err(
-        createError(`Undefined input/output pin name: ${lhs.pin}`, lhs.span)
-      );
+      return Err(createError(`Undefined pin name: ${lhs.pin}`, lhs.span));
     }
     if (!isConstant(rhs.pin)) {
       this.wires.push({ partChip: partChip, lhs, rhs });
@@ -408,7 +406,7 @@ class ChipBuilder {
     }
     if (isConstant(rhs.pin)) {
       return Err(
-        createError(`Internal pin name cannot be true/false`, rhs.span)
+        createError(`Internal pin name cannot be "true" or "false"`, rhs.span)
       );
     }
     return Ok();
@@ -421,7 +419,7 @@ class ChipBuilder {
       return Err(
         createError(
           isConstant(rhs.pin)
-            ? `Constant bus cannot be subscripted / indexed`
+            ? `Constant bus cannot be subscripted or indexed`
             : `Internal pins (in this case: ${rhs.pin}) cannot be subscripted or indexed`,
           rhs.span
         )
