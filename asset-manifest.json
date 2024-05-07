@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/web-ide/static/css/main.075899cc.css",
-    "main.js": "/web-ide/static/js/main.49c7b843.js",
+    "main.js": "/web-ide/static/js/main.bbd2dd16.js",
     "static/js/297.2c45dab0.chunk.js": "/web-ide/static/js/297.2c45dab0.chunk.js",
     "static/js/269.1e46835e.chunk.js": "/web-ide/static/js/269.1e46835e.chunk.js",
     "static/css/840.a1dbc3b6.chunk.css": "/web-ide/static/css/840.a1dbc3b6.chunk.css",
@@ -22,13 +22,13 @@
     "static/js/92.df5de9d5.chunk.js": "/web-ide/static/js/92.df5de9d5.chunk.js",
     "static/js/233.880b3b5e.chunk.js": "/web-ide/static/js/233.880b3b5e.chunk.js",
     "static/js/263.b5ccc9c9.chunk.js": "/web-ide/static/js/263.b5ccc9c9.chunk.js",
-    "static/js/700.57230cf0.chunk.js": "/web-ide/static/js/700.57230cf0.chunk.js",
-    "static/js/200.3e9f31b5.chunk.js": "/web-ide/static/js/200.3e9f31b5.chunk.js",
+    "static/js/700.c7010e7d.chunk.js": "/web-ide/static/js/700.c7010e7d.chunk.js",
+    "static/js/200.63c284f4.chunk.js": "/web-ide/static/js/200.63c284f4.chunk.js",
     "service-worker.js": "/web-ide/service-worker.js",
     "index.html": "/web-ide/index.html"
   },
   "entrypoints": [
     "static/css/main.075899cc.css",
-    "static/js/main.49c7b843.js"
+    "static/js/main.bbd2dd16.js"
   ]
 }
