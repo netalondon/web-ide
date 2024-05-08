@@ -22,6 +22,9 @@ import { Panel } from "../shell/panel";
 import { TestPanel } from "../shell/test_panel";
 import "./vm.scss";
 
+import { VMS as project7Vms } from "@nand2tetris/projects/project_07/index.js";
+import { VMS as project8Vms } from "@nand2tetris/projects/project_08/index.js";
+
 const ERROR_MESSAGES: Record<ERRNO, string> = {
   [ERRNO.SYS_WAIT_DURATION_NOT_POSITIVE]: t`Duration must be positive (Sys.wait)`,
   [ERRNO.ARRAY_SIZE_NOT_POSITIVE]: t`Array size must be positive (Array.new)`,
@@ -161,12 +164,27 @@ const VM = () => {
       }
     }
 
-    const dirName = event.target.files[0].webkitRelativePath.split("/")[0];
-    toolStates.vm.setTitle(`Folder name: ${dirName}`);
-
     actions.loadVm(sources);
     actions.reset();
     setStatus("");
+
+    const dirname = event.target.files[0].webkitRelativePath.split("/")[0];
+    toolStates.vm.setTitle(`Folder name: ${dirname}`);
+    if (dirname) {
+      let vms: Record<string, Record<string, string>> | undefined;
+
+      if (Object.keys(project7Vms).includes(dirname)) {
+        vms = project7Vms;
+      }
+      if (Object.keys(project8Vms).includes(dirname)) {
+        vms = project8Vms;
+      }
+
+      if (vms) {
+        setTst(vms[dirname][`${dirname}VME.tst`]);
+        setCmp(vms[dirname][`${dirname}.cmp`]);
+      }
+    }
   };
 
   const onSpeedChange = (speed: number) => {
@@ -304,6 +322,7 @@ const VM = () => {
           cmp={[cmp, setCmp]}
           setPath={setPath}
           showClear={true}
+          showLoad={false}
           defaultTst={DEFAULT_TEST}
           onSpeedChange={onSpeedChange}
           disabled={!state.controls.valid}
