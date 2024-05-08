@@ -2,6 +2,7 @@ import { loader } from "@monaco-editor/react";
 import { AsmLanguage } from "./asm";
 import { CmpLanguage } from "./cmp";
 import { HdlLanguage, HdlSnippets } from "./hdl";
+import { JackLanguage } from "./jack";
 import { TstLanguage } from "./tst";
 import { VmLanguage } from "./vm";
 
@@ -11,6 +12,7 @@ const LANGUAGES = {
   tst: TstLanguage,
   vm: VmLanguage,
   asm: AsmLanguage,
+  jack: JackLanguage,
 };
 
 const SNIPPETS = {

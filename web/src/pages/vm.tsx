@@ -164,6 +164,9 @@ const VM = () => {
       }
     }
 
+    const dirName = event.target.files[0].webkitRelativePath.split("/")[0];
+    toolStates.vm.setTitle(`${dirName} / *.vm`);
+
     actions.loadVm(sources);
     actions.reset();
     setStatus("");

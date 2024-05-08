@@ -249,6 +249,7 @@ const Monaco = ({
         quickSuggestions: {
           other: "inline",
         },
+        renderValidationDecorations: "on",
       });
       doDecorations();
       calculateHeight();
@@ -276,7 +277,10 @@ const Monaco = ({
   // Prevent editing disabled editors
   useEffect(() => {
     if (editor.current === undefined) return;
-    editor.current.updateOptions({ readOnly: disabled });
+    editor.current.updateOptions({
+      readOnly: disabled,
+      renderValidationDecorations: "on",
+    });
   }, [editor, disabled]);
 
   // Add error markers on parse failure

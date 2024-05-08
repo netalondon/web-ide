@@ -1,5 +1,6 @@
 import { unwrap } from "@davidsouther/jiffies/lib/esm/result";
 import { Trans } from "@lingui/macro";
+import { BaseContext } from "@nand2tetris/components/stores/base.context";
 import { useCompilerPageStore } from "@nand2tetris/components/stores/compiler.store";
 import { compile } from "@nand2tetris/simulator/jack/compiler.js";
 import { VmFile } from "@nand2tetris/simulator/test/vmtst";
@@ -20,6 +21,7 @@ import { Panel } from "../shell/panel";
 import "./compiler.scss";
 
 export const Compiler = () => {
+  const { setStatus } = useContext(BaseContext);
   const { tracking, toolStates, setTitle } = useContext(AppContext);
   const { state, dispatch, actions } = useCompilerPageStore();
 
@@ -33,6 +35,14 @@ export const Compiler = () => {
 
   useEffect(() => {
     setTitle(toolStates.compiler.title);
+  });
+
+  useEffect(() => {
+    setStatus(
+      valid()
+        ? "Jack code is valid"
+        : state.files[state.selected].error?.message ?? ""
+    );
   });
 
   const selectTab = useCallback(
@@ -55,12 +65,12 @@ export const Compiler = () => {
     for (const file of event.target.files) {
       if (file.name.endsWith(".jack")) {
         const source = await file.text();
-        actions.addFile(file.name.replace(".jack", ""), source);
+        await actions.addFile(file.name.replace(".jack", ""), source);
       }
     }
 
     const dirName = event.target.files[0].webkitRelativePath.split("/")[0];
-    toolStates.compiler.setTitle(`Folder name: ${dirName}`);
+    toolStates.compiler.setTitle(`${dirName} / *.jack`);
   };
 
   const valid = () =>
@@ -92,14 +102,14 @@ export const Compiler = () => {
     const blob = await zip.generateAsync({ type: "blob" });
     const url = URL.createObjectURL(blob);
     downloadRef.current.href = url;
-    downloadRef.current.download = `VmCode`;
+    downloadRef.current.download = `VMcode`;
     downloadRef.current.click();
 
     URL.revokeObjectURL(url);
   };
 
   const runInVm = () => {
-    toolStates.vm.setTitle(toolStates.compiler.title);
+    toolStates.vm.setTitle(toolStates.compiler.title?.replace("jack", "vm"));
     toolStates.vm.setFiles(compileAll());
     redirectRef.current?.click();
   };
@@ -126,30 +136,28 @@ export const Compiler = () => {
             <div>
               <Trans>Source</Trans>
             </div>
-            <div className="flex-1">
-              <fieldset role="group">
-                <button className="flex-0" onClick={uploadFiles}>
-                  📂
-                </button>
-                <button
-                  className="flex-0"
-                  disabled={!valid()}
-                  data-tooltip="Compiles into VM code and invokes the VM emulator"
-                  data-placement="right"
-                  onClick={runInVm}
-                >
-                  Compile
-                </button>
-                <button
-                  className="flex-0"
-                  disabled={!valid()}
-                  data-tooltip="Downloads the compiled VM code"
-                  data-placement="bottom"
-                  onClick={compileAndDownload}
-                >
-                  Download
-                </button>
-              </fieldset>
+            <div className="flex row flex-1">
+              <button className="flex-0" onClick={uploadFiles}>
+                📂
+              </button>
+              <button
+                className="flex-0"
+                disabled={!valid()}
+                data-tooltip="Loads the compiled code into the VM emulators"
+                data-placement="right"
+                onClick={runInVm}
+              >
+                Run
+              </button>
+              <button
+                className="flex-0"
+                disabled={!valid()}
+                data-tooltip="Downloads the compiled VM code"
+                data-placement="bottom"
+                onClick={compileAndDownload}
+              >
+                Download
+              </button>
             </div>
           </>
         }
@@ -170,6 +178,11 @@ export const Compiler = () => {
                 id={`jack-tab-${file}`}
                 aria-controls={`jack-tabpanel-${file}`}
                 aria-selected={state.selected === file}
+                style={{
+                  backgroundColor: state.files[file].valid
+                    ? undefined
+                    : "#ffaaaa",
+                }}
               >
                 <label>
                   <input
@@ -196,7 +209,7 @@ export const Compiler = () => {
                     return;
                   }}
                   error={state.files[file].error}
-                  language={""}
+                  language={"jack"}
                 />
               </div>
             </>
