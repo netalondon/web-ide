@@ -21,6 +21,26 @@ import {
   removeLocalAdapterFromIndexedDB,
 } from "./base/indexDb.js";
 
+async function cloneTree(
+  sourceFs: FileSystem,
+  targetFs: FileSystem,
+  dir = "/",
+  ignoreProjectsDir = false,
+) {
+  for (const entry of await sourceFs.scandir(dir)) {
+    const sourcePath = `${dir == "/" ? "" : dir}/${entry.name}`;
+    const targetPath = ignoreProjectsDir
+      ? sourcePath.replace("/projects", "/")
+      : sourcePath;
+
+    if (entry.isFile()) {
+      await targetFs.writeFile(targetPath, await sourceFs.readFile(sourcePath));
+    } else {
+      await cloneTree(sourceFs, targetFs, sourcePath, ignoreProjectsDir);
+    }
+  }
+}
+
 export interface BaseContext {
   fs: FileSystem;
   localFsRoot?: string;
@@ -49,8 +69,12 @@ export function useBaseContext(): BaseContext {
         new FileSystemAccessFileSystemAdapter(handle),
       );
       if (createFiles) {
-        const loaders = await import("@nand2tetris/projects/loader.js");
-        await loaders.createFiles(newFs);
+        if (root) {
+          const loaders = await import("@nand2tetris/projects/loader.js");
+          await loaders.createFiles(newFs);
+        } else {
+          await cloneTree(fs, newFs, "/projects", true);
+        }
       }
       setFs(newFs);
       setRoot(handle.name);
